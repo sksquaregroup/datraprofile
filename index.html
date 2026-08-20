@@ -9,56 +9,83 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css?v=5.0">
+  <style>
+    /* Instant XeOne Gradient Lock — Lighter Shade */
+    html, body {
+      background: linear-gradient(115deg, #4e3ca8 0%, #633bb5 24%, #8d2e9e 55%, #b92985 85%, #cc2d78 100%) !important;
+      background-attachment: fixed !important;
+      color: #ffffff !important;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
 <body>
+
+
 
   <!-- NAVIGATION -->
   <header class="site-nav">
     <div class="container nav-container">
+      <!-- Left: Logo & Name -->
       <a href="/" class="brand-mark">
-        <div class="logo-badge">
-          <svg viewBox="0 0 24 24"><path d="M4 4h7a8 8 0 0 1 8 8 8 8 0 0 1-8 8H4z"/></svg>
-        </div>
+        <img src="/images/logo.png" alt="Datra Platform Logo" class="brand-logo-img">
         <div class="brand-text">
           <strong>Datra Platform</strong>
-          <span>by SK Square Group</span>
+          <span class="brand-sub">BY SK SQUARE GROUP</span>
         </div>
       </a>
 
-      <ul class="nav-menu">
-        <li><a href="/#features">Features</a></li>
+      <!-- Center: Navigation Options -->
+      <ul class="nav-menu nav-center">
+        <li><a href="#features">Features</a></li>
         <li><a href="/platform/">Platform</a></li>
         <li><a href="/sectors/">Sectors</a></li>
-        <li><a href="/integrations/">Integrations &amp; API</a></li>
-        <li><a href="/proof-of-play/">Proof of Play</a></li>
-        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="/integrations/">Integrations</a></li>
+        <li><a href="/proof-of-play/">Hardware</a></li>
+        <li><a href="#pricing">Packages</a></li>
       </ul>
 
+      <!-- Right: Client Login & Demo -->
       <div class="nav-actions">
-        <a href="https://app.datraplatform.com" class="btn btn-secondary btn-sm-nav">Client Portal</a>
-        <a href="#demo" class="btn btn-primary btn-sm-nav">Schedule Demo</a>
+        <a href="https://app.datraplatform.com" class="btn-nav-outline">Log In</a>
+        <a href="#demo" class="btn-nav-solid">Book a Demo &rarr;</a>
       </div>
     </div>
   </header>
 
-  <!-- HERO SECTION -->
-  <section class="hero-wrapper">
-    <div class="hero-mesh"></div>
-    <div class="container hero-content-grid">
-      <div>
+  <!-- XEONE HERO SECTION -->
+  <section class="hero-wrapper-xeone" id="hero">
+    <div class="hero-xeone-inner reveal-item in-view">
+      <span class="hero-xeone-top">The Ultimate</span>
+      <h1 class="hero-xeone-main">Next Big Thing</h1>
+      <span class="hero-xeone-bottom">In One Page</span>
+
+      <p class="hero-xeone-subtitle">
+        The Best Enterprise DOOH &amp; Digital Signage Fleet Intelligence Platform in Market
+      </p>
+
+      <a href="#demo" class="btn-xeone-pill">LEARN MORE</a>
+
+      <div class="hero-cta-secondary-group">
+        <a href="#overview" class="btn-xeone-ghost">View Live Grid &darr;</a>
+        <a href="/platform/" class="btn-xeone-ghost">Explore Architecture &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ESTATE TELEMETRY OVERVIEW SECTION -->
+  <section class="estate-showcase-section" id="overview">
+    <div class="container">
+      <div class="center-header reveal-item">
         <div class="view-switch-tabs" role="tablist" aria-label="Perspective selector">
           <button class="view-tab active" data-view="owners" role="tab">For Network Owners</button>
           <button class="view-tab" data-view="operators" role="tab">For Operations Teams</button>
         </div>
 
-        <div class="hero-pill-badge">
-          <span class="tag">Next-Gen Release</span>
-          <span>Next-Generation Fleet Telemetry &amp; Automation</span>
-        </div>
-
-        <h1 class="h1 view-owners-only">Total Visibility Over Your <span>Display Estate.</span></h1>
-        <h1 class="h1 view-operators-only">Centralized Command For Every <span>Screen &amp; Player.</span></h1>
+        <h2 class="h2 view-owners-only">Total Visibility Over Your <span>Display Estate.</span></h2>
+        <h2 class="h2 view-operators-only">Centralized Command For Every <span>Screen &amp; Player.</span></h2>
 
         <p class="body-text view-owners-only">
           Datra Platform empowers media owners and asset managers with real-time uptime analytics, immutable proof of play for advertisers, and automated SLA compliance across thousands of remote displays.
@@ -66,27 +93,10 @@
         <p class="body-text view-operators-only">
           Datra Platform gives operations and field engineering teams instant browser-based SSH access, automated RS232 hardware control, live video wall diagnostics, and AI-driven predictive maintenance.
         </p>
-
-        <div class="hero-cta-group">
-          <a href="#demo" class="btn btn-primary">
-            Request Live Walkthrough
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-          <a href="/platform/" class="btn btn-secondary">Explore Architecture</a>
-        </div>
-
-        <div class="hero-sectors-strip">
-          <span class="label">Engineered For:</span>
-          <span class="sector-tag">Aviation &amp; Airports</span>
-          <span class="sector-tag">High-Speed Rail</span>
-          <span class="sector-tag">Digital Billboards</span>
-          <span class="sector-tag">Retail Media</span>
-          <span class="sector-tag">Smart Venues</span>
-        </div>
       </div>
 
       <!-- HERO VECTOR MOCKUP -->
-      <div class="mockup-window">
+      <div class="mockup-window reveal-item">
         <div class="mockup-header">
           <div class="window-dots"><span></span><span></span><span></span></div>
           <div class="mockup-url">dashboard.datraplatform.com/estate-overview</div>
@@ -111,7 +121,7 @@
             <div class="pin-caption">Central Concourse</div>
           </div>
           <div class="map-pin" style="top:62%;left:54%;">
-            <div class="pin-bubble" style="background:var(--violet-dark)">84</div>
+            <div class="pin-bubble" style="background:#581f73">84</div>
             <div class="pin-caption">Grand Transit LED</div>
           </div>
           <div class="map-pin" style="top:74%;left:36%;">
@@ -220,7 +230,7 @@
   </section>
 
   <!-- VISUAL MOSAIC SPOTLIGHT -->
-  <section class="section alt-bg">
+  <section class="section alt-bg" id="mosaic">
     <div class="container showcase-row">
       <div class="reveal-item">
         <div class="eyebrow">Real-Time Visual Validation</div>
@@ -577,12 +587,10 @@
       <div class="footer-top-grid">
         <div>
           <a href="/" class="brand-mark" style="margin-bottom:16px;">
-            <div class="logo-badge">
-              <svg viewBox="0 0 24 24"><path d="M4 4h7a8 8 0 0 1 8 8 8 8 0 0 1-8 8H4z"/></svg>
-            </div>
+            <img src="/images/logo.png" alt="Datra Platform Logo" class="brand-logo-img">
             <div class="brand-text">
               <strong style="color:#fff;">Datra Platform</strong>
-              <span>by SK Square Group</span>
+              <span class="brand-sub">BY SK SQUARE GROUP</span>
             </div>
           </a>
           <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6);max-width:340px;">

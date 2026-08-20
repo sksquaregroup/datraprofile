@@ -1,5 +1,5 @@
 /**
- * Datra Platform — Interactive Logic
+ * Datra Platform — XeOne Theme Interactive Logic
  * Proprietary to SK Square Group
  */
 
@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     revealItems.forEach(el => observer.observe(el));
   }
+
+
 
   // Infinite Partner Marquee Duplication
   const marqueeStrip = document.getElementById('marqueeStrip');

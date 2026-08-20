@@ -9,35 +9,43 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css?v=5.0">
+  <style>
+    html, body {
+      background: linear-gradient(115deg, #4e3ca8 0%, #633bb5 24%, #8d2e9e 55%, #b92985 85%, #cc2d78 100%) !important;
+      background-attachment: fixed !important;
+      color: #ffffff !important;
+    }
+  </style>
 </head>
 <body>
 
   <!-- NAVIGATION -->
   <header class="site-nav">
     <div class="container nav-container">
+      <!-- Left: Logo & Name -->
       <a href="/" class="brand-mark">
-        <div class="logo-badge">
-          <svg viewBox="0 0 24 24"><path d="M4 4h7a8 8 0 0 1 8 8 8 8 0 0 1-8 8H4z"/></svg>
-        </div>
+        <img src="/images/logo.png" alt="Datra Platform Logo" class="brand-logo-img">
         <div class="brand-text">
           <strong>Datra Platform</strong>
-          <span>by SK Square Group</span>
+          <span class="brand-sub">BY SK SQUARE GROUP</span>
         </div>
       </a>
 
-      <ul class="nav-menu">
+      <!-- Center: Navigation Options -->
+      <ul class="nav-menu nav-center">
         <li><a href="/#features">Features</a></li>
         <li><a href="/platform/">Platform</a></li>
         <li><a href="/sectors/" class="active">Sectors</a></li>
-        <li><a href="/integrations/">Integrations &amp; API</a></li>
-        <li><a href="/proof-of-play/">Proof of Play</a></li>
-        <li><a href="/#pricing">Pricing</a></li>
+        <li><a href="/integrations/">Integrations</a></li>
+        <li><a href="/proof-of-play/">Hardware</a></li>
+        <li><a href="/#pricing">Packages</a></li>
       </ul>
 
+      <!-- Right: Client Login & Demo -->
       <div class="nav-actions">
-        <a href="https://app.datraplatform.com" class="btn btn-secondary btn-sm-nav">Client Portal</a>
-        <a href="/#demo" class="btn btn-primary btn-sm-nav">Schedule Demo</a>
+        <a href="https://app.datraplatform.com" class="btn-nav-outline">Log In</a>
+        <a href="/#demo" class="btn-nav-solid">Book a Demo &rarr;</a>
       </div>
     </div>
   </header>
@@ -166,12 +174,10 @@
       <div class="footer-top-grid">
         <div>
           <a href="/" class="brand-mark" style="margin-bottom:16px;">
-            <div class="logo-badge">
-              <svg viewBox="0 0 24 24"><path d="M4 4h7a8 8 0 0 1 8 8 8 8 0 0 1-8 8H4z"/></svg>
-            </div>
+            <img src="/images/logo.png" alt="Datra Platform Logo" class="brand-logo-img">
             <div class="brand-text">
               <strong style="color:#fff;">Datra Platform</strong>
-              <span>by SK Square Group</span>
+              <span class="brand-sub">BY SK SQUARE GROUP</span>
             </div>
           </a>
           <p style="font-size:13px;line-height:1.7;color:rgba(255,255,255,0.6);max-width:340px;">
