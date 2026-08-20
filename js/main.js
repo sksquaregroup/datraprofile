@@ -1,123 +1,146 @@
-// Add a shadow to the nav once the page is scrolled.
-const nav = document.getElementById('nav');
-if (nav) {
-  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
-}
+/**
+ * Datra Platform — Interactive Logic
+ * Proprietary to SK Square Group
+ */
 
-// Reveal-on-scroll: fade elements in as they enter the viewport.
-const obs = new IntersectionObserver(
-  e => e.forEach(el => { if (el.isIntersecting) el.target.classList.add('in'); }),
-  { threshold: 0.10 }
-);
-document.querySelectorAll('.rv').forEach(el => obs.observe(el));
-
-// Logo carousel: duplicate the set once so the marquee can loop seamlessly.
-const logoTrack = document.getElementById('logoTrack');
-if (logoTrack) {
-  logoTrack.setAttribute('aria-label', 'Trusted partners');
-  const clone = logoTrack.cloneNode(true);
-  while (clone.firstElementChild) {
-    const item = clone.firstElementChild;
-    item.setAttribute('aria-hidden', 'true');
-    logoTrack.appendChild(item);
-  }
-}
-
-// Audience toggle: switch the page between Owner and Operator emphasis.
-// Default is "owners". Choice persists in localStorage across visits.
-(function () {
-  const btns = document.querySelectorAll('.aud-btn');
-  if (!btns.length) return;
-  let saved = 'owners';
-  try { saved = localStorage.getItem('datraView') || 'owners'; } catch (e) {}
-
-  function setView(view) {
-    document.body.setAttribute('data-view', view);
-    btns.forEach(b => {
-      const on = b.dataset.viewSet === view;
-      b.classList.toggle('active', on);
-      b.setAttribute('aria-selected', on ? 'true' : 'false');
+document.addEventListener('DOMContentLoaded', () => {
+  // Navigation Scroll Class
+  const navHeader = document.querySelector('header.site-nav');
+  if (navHeader) {
+    window.addEventListener('scroll', () => {
+      navHeader.classList.toggle('scrolled', window.scrollY > 15);
     });
-    try { localStorage.setItem('datraView', view); } catch (e) {}
   }
 
-  btns.forEach(b => b.addEventListener('click', () => setView(b.dataset.viewSet)));
-  setView(saved);
-})();
+  // Scroll Reveal Animations
+  const revealItems = document.querySelectorAll('.reveal-item');
+  if (revealItems.length > 0) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.08 });
 
-// Demo form: submit to demo handler, show inline status.
-(function () {
-  const form = document.getElementById('demoForm');
-  if (!form) return;
-  const statusEl = document.getElementById('df-status');
-  const submitBtn = document.getElementById('df-submit');
+    revealItems.forEach(el => observer.observe(el));
+  }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!statusEl) return;
-    statusEl.className = 'df-status';
-    statusEl.textContent = '';
+  // Infinite Partner Marquee Duplication
+  const marqueeStrip = document.getElementById('marqueeStrip');
+  if (marqueeStrip) {
+    const clone = marqueeStrip.cloneNode(true);
+    while (clone.firstElementChild) {
+      const node = clone.firstElementChild;
+      node.setAttribute('aria-hidden', 'true');
+      marqueeStrip.appendChild(node);
+    }
+  }
 
-    // Basic required-field check with inline highlighting.
-    let firstInvalid = null;
-    form.querySelectorAll('[required]').forEach((el) => {
-      const empty = el.type === 'checkbox' ? !el.checked : !el.value.trim();
-      const wrap = el.closest('.df-field') || el.closest('.df-consent');
-      if (wrap) wrap.classList.toggle('err', empty);
-      if (empty && !firstInvalid) firstInvalid = el;
-    });
-    if (firstInvalid) {
-      statusEl.className = 'df-status bad';
-      statusEl.textContent = 'Please complete the highlighted fields.';
-      firstInvalid.focus();
-      return;
+  // Audience View Switcher (For Operators vs For Asset Owners)
+  const viewTabs = document.querySelectorAll('.view-tab');
+  if (viewTabs.length > 0) {
+    let savedView = 'owners';
+    try {
+      savedView = localStorage.getItem('datraAudienceView') || 'owners';
+    } catch (e) {}
+
+    function applyView(viewName) {
+      document.body.setAttribute('data-view', viewName);
+      viewTabs.forEach(tab => {
+        const isCurrent = tab.dataset.view === viewName;
+        tab.classList.toggle('active', isCurrent);
+        tab.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+      });
+      try {
+        localStorage.setItem('datraAudienceView', viewName);
+      } catch (e) {}
     }
 
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      const original = submitBtn.innerHTML;
-      submitBtn.textContent = 'Sending…';
+    viewTabs.forEach(tab => {
+      tab.addEventListener('click', () => applyView(tab.dataset.view));
+    });
 
-      setTimeout(() => {
-        form.reset();
-        statusEl.className = 'df-status ok';
-        statusEl.textContent = 'Thanks — our SK Square Group specialist will be in touch shortly to schedule your Datra demo.';
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = original;
-      }, 800);
+    applyView(savedView);
+  }
+
+  // Demo Booking Form Handler
+  const demoForm = document.getElementById('demoForm');
+  if (demoForm) {
+    const statusMsg = document.getElementById('formStatusMsg');
+    const submitBtn = document.getElementById('formSubmitBtn');
+
+    demoForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!statusMsg) return;
+
+      statusMsg.className = 'form-status-msg';
+      statusMsg.textContent = '';
+
+      let firstError = null;
+      demoForm.querySelectorAll('[required]').forEach(field => {
+        const isEmpty = field.type === 'checkbox' ? !field.checked : !field.value.trim();
+        const parentGroup = field.closest('.form-group') || field.closest('.form-consent-row');
+        if (parentGroup) parentGroup.classList.toggle('error', isEmpty);
+        if (isEmpty && !firstError) firstError = field;
+      });
+
+      if (firstError) {
+        statusMsg.className = 'form-status-msg bad';
+        statusMsg.textContent = 'Please fill out all required fields to proceed.';
+        firstError.focus();
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        const originalText = submitBtn.innerHTML;
+        submitBtn.textContent = 'Scheduling Demo…';
+
+        setTimeout(() => {
+          demoForm.reset();
+          statusMsg.className = 'form-status-msg ok';
+          statusMsg.textContent = '✓ Thank you! An SK Square Group digital signage architect will contact you within 24 hours to arrange your live Datra Platform walkthrough.';
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }, 800);
+      }
+    });
+  }
+
+  // Cookie Notice Banner
+  const cookieBanner = document.getElementById('cookieBanner');
+  const cookieAcceptBtn = document.getElementById('cookieAcceptBtn');
+  const cookieRejectBtn = document.getElementById('cookieRejectBtn');
+  const cookieReopenBtn = document.getElementById('cookieReopenBtn');
+
+  if (cookieBanner) {
+    const CONSENT_KEY = 'datraCookieSettings';
+
+    function setCookieChoice(choice) {
+      try {
+        localStorage.setItem(CONSENT_KEY, choice);
+      } catch (e) {}
+      cookieBanner.classList.remove('show');
+      if (cookieReopenBtn) cookieReopenBtn.hidden = false;
     }
-  });
-})();
 
-// Cookie consent
-(function () {
-  const KEY = 'datraCookieConsent'; // 'accepted' | 'rejected'
-  const banner    = document.getElementById('cookieBanner');
-  const reopen    = document.getElementById('cookieReopen');
-  const acceptBtn = document.getElementById('cookieAccept');
-  const rejectBtn = document.getElementById('cookieReject');
-  if (!banner) return;
+    let savedChoice = null;
+    try {
+      savedChoice = localStorage.getItem(CONSENT_KEY);
+    } catch (e) {}
 
-  function showBanner(show) {
-    banner.classList.toggle('show', show);
-    if (reopen) reopen.hidden = show;
+    if (!savedChoice) {
+      setTimeout(() => cookieBanner.classList.add('show'), 600);
+    } else if (cookieReopenBtn) {
+      cookieReopenBtn.hidden = false;
+    }
+
+    cookieAcceptBtn?.addEventListener('click', () => setCookieChoice('accepted'));
+    cookieRejectBtn?.addEventListener('click', () => setCookieChoice('rejected'));
+    cookieReopenBtn?.addEventListener('click', () => {
+      cookieBanner.classList.add('show');
+      cookieReopenBtn.hidden = true;
+    });
   }
-
-  function setConsent(value) {
-    try { localStorage.setItem(KEY, value); } catch (e) {}
-    showBanner(false);
-  }
-
-  let saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (e) {}
-
-  if (saved === 'accepted' || saved === 'rejected') {
-    showBanner(false);
-  } else {
-    showBanner(true);
-  }
-
-  acceptBtn && acceptBtn.addEventListener('click', () => setConsent('accepted'));
-  rejectBtn && rejectBtn.addEventListener('click', () => setConsent('rejected'));
-  reopen   && reopen.addEventListener('click', () => showBanner(true));
-})();
+});
