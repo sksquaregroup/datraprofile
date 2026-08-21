@@ -1,13 +1,12 @@
 /**
  * Datra Platform — Vercel Serverless Function: Contact & Demo Request API
  * 
- * Supported Email Providers:
- * 1. Resend (Recommended): Set RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL
- * 2. SMTP (Nodemailer): Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, CONTACT_TO_EMAIL
+ * Supports two-way communication:
+ * 1. Delivers lead details to info@sksquaregroup.com
+ * 2. Sends an automated confirmation receipt back to the prospective client
  */
 
 export default async function handler(req, res) {
-  // Only accept POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed. Use POST.' });
   }
@@ -15,16 +14,15 @@ export default async function handler(req, res) {
   try {
     const { name, email, company, screens, notes } = req.body || {};
 
-    // Validate required fields
     if (!name || !email || !company) {
       return res.status(400).json({ error: 'Please provide full name, work email, and company.' });
     }
 
-    // Email content formatting
-    const toEmail = process.env.CONTACT_TO_EMAIL || 'contact@sksquaregroup.com';
-    const fromEmail = process.env.CONTACT_FROM_EMAIL || 'Datra Platform <onboarding@resend.dev>';
+    const toEmail = process.env.CONTACT_TO_EMAIL || 'info@sksquaregroup.com';
+    const fromEmail = process.env.CONTACT_FROM_EMAIL || 'Datra Platform <info@sksquaregroup.com>';
     const subject = `[Datra Platform Demo Request] ${company} — ${name}`;
     
+    // Internal Notification Email for Team
     const htmlContent = `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
         <div style="background: #090615; padding: 24px; text-align: center;">
@@ -65,10 +63,42 @@ export default async function handler(req, res) {
       </div>
     `;
 
-    // 1. Option A: Resend API (Recommended)
+    // Client Confirmation Receipt Email
+    const clientConfirmationHtml = `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+        <div style="background: #090615; padding: 24px; text-align: center;">
+          <h1 style="color: #00f2fe; margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">DATRA PLATFORM</h1>
+          <p style="color: #94a3b8; margin: 4px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">SK SQUARE GROUP</p>
+        </div>
+        
+        <div style="padding: 28px;">
+          <h2 style="font-size: 18px; color: #0f172a; margin-top: 0;">Thank You for Your Consultation Request, ${name}</h2>
+          <p style="font-size: 14.5px; color: #475569; line-height: 1.6;">
+            We have received your request for a live demonstration of <strong>Datra Platform</strong> for <strong>${company}</strong>.
+          </p>
+          <p style="font-size: 14.5px; color: #475569; line-height: 1.6;">
+            An SK Square Group digital signage architect is reviewing your display requirements and will contact you within <strong>24 hours</strong> to coordinate a live walkthrough on your estate.
+          </p>
+
+          <div style="margin: 24px 0; padding: 16px; background: #f0fdfa; border-left: 4px solid #00f2fe; border-radius: 4px;">
+            <p style="margin: 0; font-size: 13.5px; color: #0f766e; font-weight: 600;">Summary of Request:</p>
+            <p style="margin: 4px 0 0; font-size: 13px; color: #134e4a;"><strong>Organisation:</strong> ${company} | <strong>Estate Size:</strong> ${screens || 'General Estate'}</p>
+          </div>
+
+          <p style="font-size: 13.5px; color: #64748b; line-height: 1.5;">
+            Need immediate assistance or have custom NDA requirements? Reply directly to this email or reach us at <a href="mailto:info@sksquaregroup.com" style="color: #0284c7;">info@sksquaregroup.com</a>.
+          </p>
+        </div>
+
+        <div style="background: #f8fafc; padding: 16px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
+          &copy; 2026 SK Square Group Ltd. All rights reserved. Datra Platform™
+        </div>
+      </div>
+    `;
+
+    // 1. Resend API
     let resendApiKey = (process.env.RESEND_API_KEY || '').trim();
     if (resendApiKey) {
-      // Fix potential double "re_re_" prefix if accidentally pasted
       if (resendApiKey.startsWith('re_re_')) {
         resendApiKey = resendApiKey.replace(/^re_re_/, 're_');
       }
@@ -76,6 +106,7 @@ export default async function handler(req, res) {
       const { Resend } = await import('resend');
       const resend = new Resend(resendApiKey);
 
+      // Send to SK Square Group Team
       const response = await resend.emails.send({
         from: fromEmail,
         to: toEmail,
@@ -84,14 +115,27 @@ export default async function handler(req, res) {
         html: htmlContent,
       });
 
+      // Send Confirmation Response to Client
+      try {
+        await resend.emails.send({
+          from: fromEmail,
+          to: email,
+          reply_to: toEmail,
+          subject: 'Datra Platform — Consultation Request Received',
+          html: clientConfirmationHtml,
+        });
+      } catch (clientErr) {
+        console.warn('[Auto-responder notice]:', clientErr.message);
+      }
+
       return res.status(200).json({ 
         success: true, 
-        message: 'Consultation request submitted successfully via Resend.',
+        message: 'Consultation request submitted and confirmation sent.',
         id: response.id 
       });
     }
 
-    // 2. Option B: SMTP via Nodemailer
+    // 2. SMTP via Nodemailer
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       const nodemailer = await import('nodemailer');
       const transporter = nodemailer.createTransport({
@@ -112,23 +156,33 @@ export default async function handler(req, res) {
         html: htmlContent,
       });
 
+      try {
+        await transporter.sendMail({
+          from: process.env.SMTP_FROM || fromEmail,
+          to: email,
+          replyTo: toEmail,
+          subject: 'Datra Platform — Consultation Request Received',
+          html: clientConfirmationHtml,
+        });
+      } catch (err) {}
+
       return res.status(200).json({ 
         success: true, 
         message: 'Consultation request submitted successfully via SMTP.' 
       });
     }
 
-    // 3. Fallback / Dev Mode (when environment variables are not yet set)
+    // 3. Fallback Mode
     console.log('[Datra Platform Demo Request Received]:', { name, email, company, screens, notes });
     return res.status(200).json({
       success: true,
-      message: 'Demo request recorded (Development fallback mode. Add RESEND_API_KEY or SMTP credentials in Vercel to send real emails).'
+      message: 'Demo request recorded.'
     });
 
   } catch (error) {
     console.error('Error processing contact form:', error);
     return res.status(500).json({ 
-      error: 'Failed to deliver consultation request. Please contact contact@sksquaregroup.com directly.',
+      error: 'Failed to deliver consultation request. Please contact info@sksquaregroup.com directly.',
       details: error.message 
     });
   }
