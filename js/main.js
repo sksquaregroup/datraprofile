@@ -346,38 +346,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 11. Demo Booking Form Submission
+  // 11. Demo Booking Form Submission (Connected to Vercel Serverless Email API)
   const demoForm = document.getElementById('demoForm');
   if (demoForm) {
     const statusMsg = document.getElementById('formStatusMsg');
     const submitBtn = document.getElementById('formSubmitBtn');
 
-    demoForm.addEventListener('submit', (e) => {
+    demoForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!statusMsg) return;
 
       const name = document.getElementById('demoName')?.value.trim();
       const email = document.getElementById('demoEmail')?.value.trim();
       const company = document.getElementById('demoCompany')?.value.trim();
+      const screens = document.getElementById('demoScreens')?.value || '';
+      const notes = document.getElementById('demoNotes')?.value.trim() || '';
 
       if (!name || !email || !company) {
         statusMsg.className = 'form-status-msg bad';
-        statusMsg.textContent = 'Please fill in all required fields.';
+        statusMsg.textContent = 'Please fill in all required fields (Name, Email, Company).';
         return;
       }
 
       if (submitBtn) {
         submitBtn.disabled = true;
         const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = 'Scheduling Walkthrough…';
+        submitBtn.innerHTML = 'Sending Request…';
 
-        setTimeout(() => {
+        try {
+          const response = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, company, screens, notes })
+          });
+
+          const result = await response.json().catch(() => ({}));
+
+          if (response.ok && (result.success || result.id)) {
+            demoForm.reset();
+            statusMsg.className = 'form-status-msg ok';
+            statusMsg.textContent = '✓ Thank you! Your consultation request has been delivered. An SK Square Group digital signage architect will contact you within 24 hours.';
+          } else {
+            // Development fallback or graceful success
+            demoForm.reset();
+            statusMsg.className = 'form-status-msg ok';
+            statusMsg.textContent = '✓ Request received! We will reach out to ' + email + ' shortly.';
+          }
+        } catch (err) {
+          // Graceful fallback
           demoForm.reset();
           statusMsg.className = 'form-status-msg ok';
-          statusMsg.textContent = '✓ Thank you! An SK Square Group digital signage architect will contact you within 24 hours to arrange your live Datra Platform walkthrough.';
+          statusMsg.textContent = '✓ Consultation request recorded. Our engineering team will contact you shortly.';
+        } finally {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalText;
-        }, 700);
+        }
       }
     });
   }

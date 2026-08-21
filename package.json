@@ -18,6 +18,10 @@
     "saas",
     "enterprise-monitoring"
   ],
+  "dependencies": {
+    "nodemailer": "^6.9.13",
+    "resend": "^3.2.0"
+  },
   "author": "SK Square Group",
   "license": "Proprietary"
 }
