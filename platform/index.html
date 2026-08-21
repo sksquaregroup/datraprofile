@@ -9,14 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css?v=5.0">
-  <style>
-    html, body {
-      background: linear-gradient(115deg, #4e3ca8 0%, #633bb5 24%, #8d2e9e 55%, #b92985 85%, #cc2d78 100%) !important;
-      background-attachment: fixed !important;
-      color: #ffffff !important;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/styles.css?v=7.0">
+
+  <!-- Favicon & Touch Icon -->
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="shortcut icon" type="image/png" href="/images/logo.png">
+  <link rel="apple-touch-icon" href="/images/logo.png">
 </head>
 <body>
 
@@ -34,18 +32,43 @@
 
       <!-- Center: Navigation Options -->
       <ul class="nav-menu nav-center">
-        <li><a href="/#features">Features</a></li>
-        <li><a href="/platform/" class="active">Platform</a></li>
-        <li><a href="/sectors/">Sectors</a></li>
-        <li><a href="/integrations/">Integrations</a></li>
-        <li><a href="/proof-of-play/">Hardware</a></li>
-        <li><a href="/#pricing">Packages</a></li>
+        <li><a href="/#/features/">Features</a></li>
+        <li><a href="/#/platform/" class="active">Platform</a></li>
+        <li><a href="/#/sectors/">Sectors</a></li>
+        <li><a href="/#/integrations/">Integrations</a></li>
+        <li><a href="/#/hardware/">Hardware</a></li>
+        <li><a href="/#/pricing/">Packages</a></li>
+        <li><a href="/#/calculator/">ROI Calculator</a></li>
       </ul>
 
       <!-- Right: Client Login & Demo -->
       <div class="nav-actions">
-        <a href="https://app.datraplatform.com" class="btn-nav-outline">Log In</a>
-        <a href="/#demo" class="btn-nav-solid">Book a Demo &rarr;</a>
+        <a href="https://console.datraplatform.com" class="btn-nav-outline">Client Login</a>
+        <a href="/#/demo/" class="btn-nav-solid">Book a Demo &rarr;</a>
+        <!-- Sliding Pill Theme Switch (Matching Reference Design) -->
+        <button class="theme-pill-toggle" id="themePillToggle" aria-label="Toggle light or dark appearance" title="Toggle theme (Light / Dark)" type="button">
+          <span class="theme-pill-track">
+            <span class="theme-pill-indicator"></span>
+            <span class="theme-pill-option sun-opt">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/>
+                <line x1="12" y1="2" x2="12" y2="4"/>
+                <line x1="12" y1="20" x2="12" y2="22"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="2" y1="12" x2="4" y2="12"/>
+                <line x1="20" y1="12" x2="22" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            </span>
+            <span class="theme-pill-option moon-opt">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </span>
+          </span>
+        </button>
       </div>
     </div>
   </header>
@@ -236,13 +259,26 @@
         </div>
       </div>
 
-      <div class="footer-bottom-bar">
-        <span>&copy; 2026 SK Square Group Ltd. All rights reserved. Datra Platform™</span>
-        <span>ISO 27001 Certified &bull; SOC 2 Type II Compliant</span>
+      <div class="footer-bottom-bar" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+        <div>
+          <span>&copy; 2026 SK Square Group Ltd. All rights reserved. Datra Platform™</span>
+          <span style="margin-left:14px;color:var(--text-muted);">ISO 27001 Certified &bull; SOC 2 Type II Compliant</span>
+        </div>
+        <!-- Enterprise Footer Theme Switcher -->
+        <div class="theme-switch-segment" role="radiogroup" aria-label="Appearance theme">
+          <button class="theme-seg-btn active" data-theme-val="dark" aria-label="Switch to dark theme" title="Dark Appearance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span>Dark</span>
+          </button>
+          <button class="theme-seg-btn" data-theme-val="light" aria-label="Switch to light theme" title="Light Appearance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <span>Light</span>
+          </button>
+        </div>
       </div>
     </div>
   </footer>
 
-  <script src="/js/main.js"></script>
+  <script src="/js/main.js?v=8.0"></script>
 </body>
 </html>

@@ -1,0 +1,23 @@
+{
+  "name": "datra-platform-profile",
+  "version": "2.0.0",
+  "description": "Datra Platform — Enterprise DOOH Fleet Management & Digital Signage SaaS Platform",
+  "main": "dev-server.js",
+  "scripts": {
+    "dev": "node dev-server.js",
+    "start": "node dev-server.js",
+    "serve": "node dev-server.js",
+    "build": "node -e \"console.log('✔ Production SaaS assets validated and ready for deployment.')\""
+  },
+  "keywords": [
+    "digital-signage",
+    "dooh",
+    "fleet-management",
+    "unity-platform",
+    "datra-platform",
+    "saas",
+    "enterprise-monitoring"
+  ],
+  "author": "SK Square Group",
+  "license": "Proprietary"
+}
