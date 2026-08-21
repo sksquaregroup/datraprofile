@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "node dev-server.js",
     "start": "node dev-server.js",
-    "serve": "node dev-server.js",
-    "build": "node -e \"console.log('✔ Production SaaS assets validated and ready for deployment.')\""
+    "serve": "node dev-server.js"
   },
   "keywords": [
     "digital-signage",
