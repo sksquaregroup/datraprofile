@@ -66,9 +66,15 @@ export default async function handler(req, res) {
     `;
 
     // 1. Option A: Resend API (Recommended)
-    if (process.env.RESEND_API_KEY) {
+    let resendApiKey = (process.env.RESEND_API_KEY || '').trim();
+    if (resendApiKey) {
+      // Fix potential double "re_re_" prefix if accidentally pasted
+      if (resendApiKey.startsWith('re_re_')) {
+        resendApiKey = resendApiKey.replace(/^re_re_/, 're_');
+      }
+
       const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY);
+      const resend = new Resend(resendApiKey);
 
       const response = await resend.emails.send({
         from: fromEmail,
