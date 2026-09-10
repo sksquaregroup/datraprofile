@@ -1,26 +1,33 @@
 # Datra Platform™
 
-> **Enterprise Digital Signage Intelligence, Real-time DOOH Fleet Management & Remote Automation**  
+> **Digital Signage Operations Platform**  
+> *Monitor Every Screen. Manage Every Player. Fix Issues Remotely.*  
 > Technology of **SK Square Group Ltd** &bull; [https://datraplatform.com](https://datraplatform.com)
 
 ---
 
 ## 🌟 Overview
 
-**Datra Platform** is a cloud-native operating system and fleet command center engineered for large-scale commercial display networks, high-density transit hubs, roadside digital billboards, and retail media installations.
+**Datra Platform** gives digital signage owners and technical teams one platform to monitor, manage, troubleshoot, and maintain their entire screen network — without the site visits.
 
-For comprehensive technical documentation, architecture diagrams, and API manuals, see [**`DOCUMENTATION.md`**](./DOCUMENTATION.md).
+`Monitor → Detect → Troubleshoot → Resolve`
 
----
+### 📋 14-Section Operational Architecture
+1. **Hero**: Centralized operations overview & live estate telemetry.
+2. **The Problem**: Solving fragmented operations across multiple screens, CMSs, and onsite visits.
+3. **Two Clear Audiences**: Tailored views for *Asset Owners* and *Technical Operators*.
+4. **How Datra Works**: 6-step lifecycle from agent install to remote resolution.
+5. **Architecture**: Web Platform ➔ Datra Agent ➔ Your Screens.
+6. **Key Features**: Live screen monitoring, estate view, remote troubleshooting, telemetry, remote control, and alerts.
+7. **Industries**: 9 Enterprise Verticals (Rail & Transit, Airports, DOOH, Retail, Corporate, Healthcare, Stadiums, Banking, Higher Education).
+8. **Why Datra?**: Clear operational advantage comparing with and without Datra workflows.
+9. **Works With Your Existing Setup**: Broadsign, Scala, Dise, Samsung, LG, Windows, Linux, Android, Chrome OS.
+10. **Dashboard**: Centralized estate console (128 Units, 112 Connected, 16 Disconnected, 8 Offline).
+11. **ROI**: Illustrative operating cost reduction across site visits, downtime, and disputes.
+12. **Pricing**: Essential (From ₹575/screen/mo), Enterprise Fleet (From ₹1,025/screen/mo), Custom.
+13. **Final CTA**: Ready to take control of your signage network? Consultation booking.
+14. **Footer**: Digital Signage Operations, Simplified. (Monitor • Manage • Troubleshoot • Report).
 
-## 🚀 Key Features
-
-* **🗺️ Estate Command & GeoSpatial Telemetry**: Real-time health drill-down from national topologies to individual display ports.
-* **⚡ Zero-VPN Remote Shell & RS232 Command Bus**: Browser-based terminal access and 80+ native hardware instructions over encrypted TLS 1.3 WebSocket tunnels.
-* **🛡️ Datra Verify™ (Cryptographic Proof of Play)**: GPU framebuffer SHA-256 frame auditing and revenue compliance protection.
-* **📱 DatraField™ Mobile Companion**: Intelligent engineer dispatch, digital RAMS safety sign-offs, and inventory tracking.
-* **🌓 Dual Theme Architecture**: Sliding pill switch supporting high-contrast obsidian dark mode and crisp enterprise light mode.
-* **📧 Serverless Email Integration**: Native Vercel `/api/contact` handler with two-way lead delivery and automatic client confirmation receipts via Resend / SMTP.
 
 ---
 

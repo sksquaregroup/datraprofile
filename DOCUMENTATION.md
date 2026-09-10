@@ -20,37 +20,50 @@
 
 ## 1. Executive Overview & Value Proposition
 
-**Datra Platform** is a mission-critical operating system and centralized fleet management platform built for large-scale digital signage networks, DOOH (Digital Out-of-Home) media owners, transport hubs, and high-density retail estates.
+**Datra Platform** is a centralized **Digital Signage Operations Platform** — *Monitor Every Screen. Manage Every Player. Fix Issues Remotely.* It gives digital signage owners and technical teams one platform to monitor, manage, troubleshoot, and maintain their entire screen network — without the site visits.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        DATRA ENTERPRISE CLOUD                          │
-│                                                                        │
-│   ┌─────────────────────┐  ┌───────────────────┐  ┌────────────────┐   │
-│   │  Telemetric Fleet   │  │  SHA-256 Frame    │  │  Zero-VPN SSH  │   │
-│   │  GeoSpatial Engine  │  │  Proof of Play    │  │  & RS232 Bus   │   │
-│   └──────────┬──────────┘  └─────────┬─────────┘  └───────┬────────┘   │
-└──────────────┼───────────────────────┼────────────────────┼────────────┘
-               │                       │                    │
-    Outbound Encrypted WebSocket TLS 1.3 Tunnels (Port 443 Only)
-               │                       │                    │
-┌──────────────▼───────────────────────▼────────────────────▼────────────┐
-│                    PHYSICAL DISPLAY INFRASTRUCTURE                     │
-│                                                                        │
-│   [ Airport FIDS ]    [ Rail Concourses ]    [ DOOH Billboards ]        │
-│   Samsung Tizen / LG webOS / BrightSign / Windows / Linux SoC / LED     │
-└────────────────────────────────────────────────────────────────────────┘
-```
+### Platform Ecosystem & Suite Structure:
+* **Datra Platform (Core Solution)**: Centralized monitoring and remote troubleshooting application with enterprise reporting. Real-time telemetry, remote diagnostic terminal, reboot & restart actions, and uptime SLA reporting.
+* **Our Other Products**:
+  1. **Datra CMS (Content Distribution)**: Dynamic playlist scheduling, dayparting, verified proof of play (POP), and playback compliance reporting across every screen.
+  2. **Orbit Platform (Network Operations)**: Enterprise network infrastructure orchestrator — manage routers, wireless access points (APs), PoE switches, cellular 4G/5G failover, and bandwidth allocation.
+  3. **Orbit Desk (Incident Management)**: Signage-specialized NOC ticketing tool to manage incidents, hardware faults, CMS sync problems, change requests, and RMA dispatches with automated SLA workflows.
 
-### Dual-Audience Value Pillars:
-* **For Network & Media Owners**:
-  * **Revenue Assurance**: Eliminates advertiser billing disputes with tamper-evident cryptographic Proof of Play (PoP).
-  * **Opex Reduction**: Cuts on-site engineer truck rolls by over 80% via automated self-healing and remote RS232/IP remediation.
-  * **99.999% SLA Compliance**: Automated failover and live SLA penalty tracking.
-* **For Technical Operators & NOC Teams**:
-  * **Zero-VPN Remote Shell**: Direct browser-based SSH and diagnostic terminal without opening risky firewall ports.
-  * **Multi-Protocol Hardware Bus**: 80+ pre-compiled RS232 commands (power toggle, input source, backlight calibration, thermal logs).
-  * **Live Visual Mosaic**: Sub-second synchronized screen captures and optical camera feed inspection.
+### Tailored Audience Architecture (Individual Cards & Master Covers):
+* **For Asset Owners (6 Capabilities)**:
+  1. *Real-Time Asset Visibility*: Monitor screens, media players, and connected devices from one dashboard.
+  2. *Online / Offline Monitoring*: Instantly identify connected, disconnected, degraded, and inactive players.
+  3. *Location-Based Management*: Organize assets by city, site, branch, zone, terminal, or customer.
+  4. *Hardware Monitoring*: Track RAM, storage, CPU, temperature, network status, BIOS, and device information.
+  5. *Performance Insights*: Understand uptime, downtime trends, SLA adherence, and operational history.
+  6. *Proactive Alerts*: Catch issues before customers or staff notice or report them.
+
+* **For Technical Operators (8 Capabilities)**:
+  1. *Remote Monitoring*: Check player health, hardware utilization, background processes, and network latency.
+  2. *Live Screenshots*: View what is currently rendering on screen without physical inspection.
+  3. *Camera Verification*: Confirm physical display environment and screen illumination where ambient cameras are installed.
+  4. *Remote Diagnostics*: Investigate player status, HDMI/EDID handshakes, connected peripherals, and OS behavior.
+  5. *Logs & System Details*: Access application logs, crash reports, and system diagnostics for fast root-cause identification.
+  6. *Remote Commands*: Restart signage software, reboot media players, flush caches, or execute maintenance scripts.
+  7. *Service Monitoring*: Track critical digital signage software, media services, and Daemons with auto-recovery.
+  8. *Task Automation*: Trigger scheduled maintenance jobs, OS patches, and fleet-wide configurations across single or grouped devices.
+
+### End-to-End 6-Step Operational Lifecycle:
+* **Step 01 — Create**: Ingest media assets, configure dynamic data widgets, and design high-impact visual campaigns.
+* **Step 02 — Schedule**: Establish targeted calendar dates, dayparting time slots, frequency caps, and fallback playlists.
+* **Step 03 — Deploy**: Push cryptographically signed packages to targeted display groups, cities, or individual screens.
+* **Step 04 — Display**: High-performance hardware acceleration renders synchronized 4K/8K content with sub-millisecond precision.
+* **Step 05 — Monitor**: Real-time telemetry ingestion streams device health, proof of play hashes, and environmental telemetry.
+* **Step 06 — Troubleshoot**: Remotely diagnose, power-cycle, reboot stalled applications, or dispatch field engineers automatically.
+
+### Enterprise Value Badges:
+* **Secure**: ISO 27001 & SOC 2 Type II certified, TLS 1.3 outbound-only communication, per-tenant data isolation.
+* **Easy Management**: Single pane of glass for mixed-hardware fleets with intuitive map and mosaic dashboards.
+* **Scalable**: Cloud-native event streaming supporting thousands of concurrent endpoints with sub-second latency.
+* **Reliable**: 99.999% SLA uptime, automated offline caching, and self-healing watchdog daemons.
+* **Remote Control**: Zero-VPN remote terminal access and multi-manufacturer RS232 hardware bus execution.
+* **Measurable Impact**: Verifiable Proof of Play, automated SLA dispute recovery, and 84% reduction in site callouts.
+
 
 ---
 
@@ -61,10 +74,11 @@ The website is engineered as a high-performance **Single Page Application (SPA)*
 ### SPA Hash Routing (`/#/route/`):
 | URL Path | Target Section | Description |
 | :--- | :--- | :--- |
+| `/#/architecture/` | `#solution-blueprint` | End-to-End System Blueprint (Components, Cloud Platform, Verticals, 6-Step Lifecycle) |
 | `/#/features/` | `#features` | Core platform capabilities (Telemetry, SSH, Proof of Play, Mobile) |
 | `/#/platform/` | `#platform` | Dual architecture view & interactive terminal simulator |
-| `/#/sectors/` | `#sectors` | Industry-specific deployment solutions (Airports, Rail, Retail, DOOH) |
-| `/#/integrations/` | `#integrations` | Certified CMS partners (Broadsign, Scala, Dise, Navori, BrightSign) |
+| `/#/sectors/` | `#sectors` | Industry-specific deployment solutions (9 Sectors: Rail & Transit, Airports & Aviation, DOOH & Roadside, Retail & QSR, Corporate & Workplace, Healthcare & Clinical, Stadiums & Venues, Banking & Finance, Higher Education) |
+| `/#/integrations/` | `#integrations` | Certified CMS partners & OS environments (Broadsign, Scala, Dise, Windows, Linux, Android, Chrome OS) |
 | `/#/hardware/` | `#hardware` | Hardware compatibility matrices (Samsung, LG, Sharp/NEC, NovaStar) |
 | `/#/pricing/` | `#pricing` | Tiered pricing packages (Starter, Professional, Enterprise) |
 | `/#/calculator/` | `#calculator` | Interactive 3-Year ROI & TCO financial estimator |
@@ -110,23 +124,27 @@ Dynamic toggle in the Hero section allowing the layout and value points to insta
 
 ---
 
-## 4. Design System & Theme Engine
+## 4. Design System & Theme Engine (Royal Violet Identity)
 
-Built using modern **Vanilla CSS custom properties (Tokens)** for maximum rendering performance, zero external framework overhead, and sub-10ms theme switching.
+Built using the **Unity Platform** structural design language paired with Datra's signature **Royal Violet** brand identity and a multi-theme engine for maximum rendering performance, crisp corporate clarity, and authentic digital signage fleet aesthetics.
 
 ### Color Palette & Visual Identity:
-* **Background Obsidian (Dark)**: `#090615` / `#0e0920`
-* **Electric Cyan (Primary)**: `#00f2fe`
-* **Vibrant Sky Blue (Secondary)**: `#38bdf8`
-* **Neon Fuchsia (Accent)**: `#d946ef`
-* **Light Theme Canvas**: `#f8fafc` / `#ffffff`
-* **Typography**: `'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`
+* **Primary Royal Violet (`--violet` / `--violet2`)**: `#7c3aed` / `#8b5cf6` (Dark: `#8b5cf6` / `#a78bfa`)
+* **Violet Accents (`--violet-light` / `--violet-dk` / `--violet-pale`)**: `#a78bfa` / `#6d28d9` / `#f5f3ff`
+* **Violet Ambient Glow (`--violet-glow`)**: `rgba(124, 58, 237, 0.28)`
+* **Canvases (Light)**: `#ffffff` (Card) / `#f9f8fe` (Alt Section) / `#0c0a1a` (Navy)
+* **Canvases (Dark Mode `[data-theme="dark"]`)**: `#090616` (Deep Obsidian Violet) / `#130d2a` (Card) / `#1a1238` (Grey)
+* **High-Contrast Clean Borders (`--border`)**: `#e2d9f3` (Light) / `rgba(255,255,255,0.10)` (Dark)
+* **Status Accents**: Green (`#10b981`), Amber (`#f59e0b`), Red (`#ef4444`)
+* **Typography**: `'Montserrat', sans-serif` (Weights 300 to 900, with letter-spacing `-0.03em` to `-0.04em` on display headings)
 
-### Sliding Pill Theme Switcher:
-An integrated oval switch (`58px × 30px`) located next to **"Book a Demo"** in the navigation header:
-* **Dark Mode**: Sliding thumb sits on the **Moon 🌙** (right) with a deep slate background.
-* **Light Mode**: Sliding thumb smoothly transitions to the **Sun ☀️** (left) with a crisp white circle and soft shadow.
-* **Storage**: Preference is automatically remembered in `localStorage` under key `datraThemePreference` and respects the visitor's OS `prefers-color-scheme`.
+### Full-Width Screen Coverage & Responsive Layout System:
+* **Edge-to-Edge Navigation**: Nav container spans 100% full-screen width with fluid horizontal padding (`padding: 0 clamp(16px, 2.5vw, 48px)`), anchoring the brand logo on the far left and the login/demo/theme controls on the far right.
+* **Full-Width Canvas Grid (`.container`)**: Expanded from legacy 1200px to an edge-covering fluid canvas (`max-width: 1720px` to `1880px` on ultrawide displays) with dynamic clamp padding (`clamp(20px, 3.5vw, 64px)`), eliminating massive empty gutters on widescreen monitors.
+* **Proportional Hero Display**: Hero columns utilize fluid distribution (`1.15fr 1fr`), dynamic headline scaling (`clamp(38px, 4.2vw, 64px)`), lead text expanding up to 720px+, and the interactive browser frame height scaling with screen width (`clamp(360px, 25vw, 480px)`).
+* **Tablet View (768px – 1180px)**: Desktop links collapse into a full-height slide-down drawer (`#navMenu.open`) with backdrop blur, 2-column feature and industry grids, and stacked 3-column steps.
+* **Mobile View (< 768px)**: 1-column touch-friendly cards, mobile drawer containing both navigation anchors and direct quick-action buttons ("Client Login" + "Book a Demo"), and responsive typography scaling.
+* **Dual Theme Synchronization**: Header sliding pill switch (`#themePillToggle`) and footer segmented switcher (`#themeSwitchSegment`) smoothly sync across dark and light modes, persisting visitor preference in `localStorage`.
 
 ---
 

@@ -8,19 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeSegBtns = document.querySelectorAll('.theme-seg-btn');
   const legacyToggleBtn = document.getElementById('themeToggleBtn');
   
-  let savedTheme = 'dark';
+  let savedTheme = 'light';
   try {
-    savedTheme = localStorage.getItem('datraThemePreference') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    savedTheme = localStorage.getItem('datraThemePreference') || 'light';
   } catch (e) {}
 
   function applyTheme(theme) {
-    const isLight = theme === 'light';
-    if (isLight) {
+    const isDark = theme === 'dark';
+    if (isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.body.setAttribute('data-theme', 'dark');
+    } else {
       document.documentElement.setAttribute('data-theme', 'light');
       document.body.setAttribute('data-theme', 'light');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-      document.body.removeAttribute('data-theme');
     }
 
     // Sync segmented buttons
@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerThemeButtons = document.querySelectorAll('.theme-pill-toggle, #themePillToggle, .theme-nav-btn, #themeNavBtn, #themeToggleBtn');
   headerThemeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-      applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
     });
   });
 
@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
           window.scrollTo({ top: targetPos, behavior: 'smooth' });
           if (navMenu && navMenu.classList.contains('open')) {
             navMenu.classList.remove('open');
+            if (mobileToggle) mobileToggle.classList.remove('active');
           }
         }
       }
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 2. Navigation Scroll State
-  const navHeader = document.querySelector('header.site-nav');
+  const navHeader = document.querySelector('header.site-nav, nav#nav');
   if (navHeader) {
     const handleScroll = () => {
       navHeader.classList.toggle('scrolled', window.scrollY > 20);
@@ -109,57 +110,88 @@ document.addEventListener('DOMContentLoaded', () => {
     handleScroll();
   }
 
-  // 3. Mobile Nav Toggle
+  // 3. Mobile Nav Toggle & Responsive Drawer Controller
   const mobileToggle = document.getElementById('mobileNavToggle');
   const navMenu = document.getElementById('navMenu');
   if (mobileToggle && navMenu) {
-    mobileToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('open');
+    const toggleNav = (forceState) => {
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : !navMenu.classList.contains('open');
+      navMenu.classList.toggle('open', shouldOpen);
+      mobileToggle.classList.toggle('active', shouldOpen);
+      mobileToggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    };
+
+    mobileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleNav();
+    });
+
+    // Close when clicking any nav link inside the drawer
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        toggleNav(false);
+      });
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', (e) => {
+      if (navMenu.classList.contains('open') && !navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+        toggleNav(false);
+      }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('open')) {
+        toggleNav(false);
+      }
     });
   }
 
-  // 4. Scroll Reveal Animation
+  // 4. Scroll Reveal & Animated Number Counter
   const revealItems = document.querySelectorAll('.rv');
   if (revealItems.length > 0) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('in-view');
+
+          // Animate numeric counters inside this revealed block if present
+          const counterEls = [
+            ...(entry.target.hasAttribute('data-count') ? [entry.target] : []),
+            ...entry.target.querySelectorAll('[data-count]')
+          ];
+          counterEls.forEach(el => {
+            if (el.dataset.animated) return;
+            el.dataset.animated = 'true';
+            const target = parseFloat(el.dataset.count);
+            const prefix = el.dataset.prefix || '';
+            const suffix = el.dataset.suffix || '';
+            const duration = parseInt(el.dataset.duration, 10) || 1200;
+            const isFloat = el.dataset.count.includes('.');
+
+            let startTimestamp = null;
+            const step = (timestamp) => {
+              if (!startTimestamp) startTimestamp = timestamp;
+              const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+              const easeOut = 1 - Math.pow(1 - progress, 3);
+              const currentVal = easeOut * target;
+
+              el.textContent = `${prefix}${isFloat ? currentVal.toFixed(1) : Math.floor(currentVal).toLocaleString()}${suffix}`;
+
+              if (progress < 1) {
+                window.requestAnimationFrame(step);
+              } else {
+                el.textContent = `${prefix}${isFloat ? target.toFixed(1) : target.toLocaleString()}${suffix}`;
+              }
+            };
+            window.requestAnimationFrame(step);
+          });
         }
       });
     }, { threshold: 0.08 });
 
     revealItems.forEach(el => observer.observe(el));
-  }
-
-  // 4. Audience View Switcher (Owners vs Operators)
-  const audButtons = document.querySelectorAll('.aud-btn');
-  if (audButtons.length > 0) {
-    let currentView = 'owners';
-    try {
-      currentView = localStorage.getItem('datraAudienceView') || 'owners';
-    } catch (e) {}
-
-    function setAudienceView(viewName) {
-      document.body.setAttribute('data-view', viewName);
-      audButtons.forEach(btn => {
-        const isActive = btn.dataset.viewSet === viewName;
-        btn.classList.toggle('active', isActive);
-        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      });
-      try {
-        localStorage.setItem('datraAudienceView', viewName);
-      } catch (e) {}
-    }
-
-    audButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetView = btn.dataset.viewSet;
-        if (targetView) setAudienceView(targetView);
-      });
-    });
-
-    setAudienceView(currentView);
   }
 
   // 5. Infinite Trust Marquee Setup
@@ -260,33 +292,155 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 8. Interactive ROI & Cost Savings Calculator
+  // 8. Interactive Platform Investment & Operational Savings Calculator
   const fleetRangeInput = document.getElementById('fleetSizeSlider');
   const fleetSizeDisplay = document.getElementById('fleetSizeVal');
+  const costNumDisplay = document.getElementById('costNumVal');
+  const costPeriodDisplay = document.getElementById('costPeriodVal');
+  const costSubDisplay = document.getElementById('costSubVal');
   const savingsDisplay = document.getElementById('annualSavingsVal');
-  const truckRollsDisplay = document.getElementById('truckRollsVal');
-  const slaRecoveryDisplay = document.getElementById('slaRecoveryVal');
+  const netBenefitDisplay = document.getElementById('netBenefitVal');
+  const calcMethodNote = document.getElementById('calcMethodNote');
+  const resultsBox = document.querySelector('.roi-results-box');
+  const roiCostBox = document.getElementById('estimatedCostVal');
+  const roiBillBtns = document.querySelectorAll('.roi-bill-btn');
+  const roiTierBtns = document.querySelectorAll('.roi-tier-btn');
 
-  if (fleetRangeInput && savingsDisplay) {
-    function updateCalculator() {
-      const screens = parseInt(fleetRangeInput.value, 10);
-      if (fleetSizeDisplay) fleetSizeDisplay.textContent = `${screens.toLocaleString()} Screens`;
+  if (fleetRangeInput && costNumDisplay && savingsDisplay) {
+    let currentPeriod = 'monthly';
+    let currentRate = 575;
+    let currentDisplayedCost = 0;
+    let currentDisplayedSavings = 0;
+    let currentDisplayedNet = 0;
+    let calcAnimFrame = null;
 
-      // Conservative industry metrics:
-      // ~ 1.8 truck rolls avoided per screen/year @ £180 callout avg
-      // ~ £22 per screen saved in proof-of-play dispute recovery
-      const truckRollsSaved = Math.round(screens * 1.8);
-      const calloutSavings = truckRollsSaved * 180;
-      const disputeSavings = Math.round(screens * 22);
-      const totalSavings = calloutSavings + disputeSavings;
+    function animateCalculatorNumbers(startCost, endCost, startSavings, endSavings, startNet, endNet, duration = 260) {
+      if (calcAnimFrame) cancelAnimationFrame(calcAnimFrame);
+      const startTime = performance.now();
 
-      savingsDisplay.textContent = `£${totalSavings.toLocaleString()}`;
-      if (truckRollsDisplay) truckRollsDisplay.textContent = `${truckRollsSaved.toLocaleString()} Calls/Yr`;
-      if (slaRecoveryDisplay) slaRecoveryDisplay.textContent = `£${disputeSavings.toLocaleString()}/Yr`;
+      function frame(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+
+        const costVal = Math.round(startCost + (endCost - startCost) * ease);
+        const savingsVal = Math.round(startSavings + (endSavings - startSavings) * ease);
+        const netVal = Math.round(startNet + (endNet - startNet) * ease);
+
+        costNumDisplay.textContent = `₹${costVal.toLocaleString('en-IN')}`;
+        savingsDisplay.innerHTML = `₹${savingsVal.toLocaleString('en-IN')} <span>/ year</span>`;
+        if (netBenefitDisplay) {
+          netBenefitDisplay.textContent = `${netVal >= 0 ? '+' : ''}₹${netVal.toLocaleString('en-IN')} / year`;
+        }
+
+        currentDisplayedCost = costVal;
+        currentDisplayedSavings = savingsVal;
+        currentDisplayedNet = netVal;
+
+        if (progress < 1) {
+          calcAnimFrame = requestAnimationFrame(frame);
+        } else {
+          costNumDisplay.textContent = `₹${endCost.toLocaleString('en-IN')}`;
+          savingsDisplay.innerHTML = `₹${endSavings.toLocaleString('en-IN')} <span>/ year</span>`;
+          if (netBenefitDisplay) {
+            netBenefitDisplay.textContent = `${endNet >= 0 ? '+' : ''}₹${endNet.toLocaleString('en-IN')} / year`;
+          }
+          currentDisplayedCost = endCost;
+          currentDisplayedSavings = endSavings;
+          currentDisplayedNet = endNet;
+        }
+      }
+      calcAnimFrame = requestAnimationFrame(frame);
     }
 
-    fleetRangeInput.addEventListener('input', updateCalculator);
-    updateCalculator();
+    function updateCalculator(animate = true) {
+      const screens = parseInt(fleetRangeInput.value, 10);
+      if (fleetSizeDisplay) {
+        fleetSizeDisplay.textContent = `${screens.toLocaleString()} Screen${screens === 1 ? '' : 's'}`;
+      }
+
+      // Platform Investment calculation:
+      const monthlyCost = screens * currentRate;
+      const annualCost = monthlyCost * 12;
+      const targetCost = currentPeriod === 'annual' ? annualCost : monthlyCost;
+
+      // Illustrative Operational Savings (avoided callouts & dispute recovery):
+      const truckRollsSaved = Math.round(screens * 1.8);
+      const calloutSavingsInr = truckRollsSaved * 18000;
+      const disputeSavingsInr = Math.round(screens * 2200);
+      const totalSavingsInr = calloutSavingsInr + disputeSavingsInr;
+      const netSavingsInr = totalSavingsInr - annualCost;
+
+      // Update period labels & subtext:
+      if (costPeriodDisplay) {
+        costPeriodDisplay.textContent = currentPeriod === 'annual' ? '/ year' : '/ mo';
+      }
+      if (costSubDisplay) {
+        costSubDisplay.textContent = currentPeriod === 'annual'
+          ? `(₹${monthlyCost.toLocaleString('en-IN')} / month)`
+          : `₹${annualCost.toLocaleString('en-IN')} / year billed annually`;
+      }
+
+      if (animate && currentDisplayedCost > 0) {
+        if (roiCostBox) {
+          roiCostBox.classList.remove('pulse');
+          void roiCostBox.offsetWidth;
+          roiCostBox.classList.add('pulse');
+        }
+        if (resultsBox) {
+          resultsBox.classList.add('updated');
+          clearTimeout(resultsBox._timer);
+          resultsBox._timer = setTimeout(() => resultsBox.classList.remove('updated'), 350);
+        }
+
+        animateCalculatorNumbers(
+          currentDisplayedCost, targetCost,
+          currentDisplayedSavings, totalSavingsInr,
+          currentDisplayedNet, netSavingsInr,
+          260
+        );
+      } else {
+        currentDisplayedCost = targetCost;
+        currentDisplayedSavings = totalSavingsInr;
+        currentDisplayedNet = netSavingsInr;
+
+        costNumDisplay.textContent = `₹${targetCost.toLocaleString('en-IN')}`;
+        savingsDisplay.innerHTML = `₹${totalSavingsInr.toLocaleString('en-IN')} <span>/ year</span>`;
+        if (netBenefitDisplay) {
+          netBenefitDisplay.textContent = `${netSavingsInr >= 0 ? '+' : ''}₹${netSavingsInr.toLocaleString('en-IN')} / year`;
+        }
+      }
+    }
+
+    // Slider input event
+    fleetRangeInput.addEventListener('input', () => updateCalculator(true));
+
+    // Billing toggle (Monthly vs Annual)
+    roiBillBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        roiBillBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentPeriod = btn.dataset.period || 'monthly';
+        updateCalculator(true);
+      });
+    });
+
+    // Plan tier toggle (Essential vs Enterprise Fleet)
+    roiTierBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        roiTierBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentRate = parseInt(btn.dataset.rate, 10) || 575;
+
+        if (calcMethodNote) {
+          const annualRate = (currentRate * 12).toLocaleString('en-IN');
+          calcMethodNote.textContent = `*Calculation Method: Estimated platform investment at ₹${currentRate}/screen/mo (₹${annualRate}/screen/yr). Operational savings estimated from avoided on-site technician callouts (~1.8 truck rolls/screen/year @ ₹18,000 avg.) and automated proof-of-play SLA dispute recovery (₹2,200/screen/year).`;
+        }
+        updateCalculator(true);
+      });
+    });
+
+    updateCalculator(false);
   }
 
   // 9. Interactive Monthly vs Annual Billing Switcher
@@ -404,4 +558,61 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // 6. Interactive Workflow Flow Controller (#how-it-works)
+  const workflowSection = document.getElementById('how-it-works');
+  const workflowCards = document.querySelectorAll('.workflow-step-card');
+  const promoPill = document.querySelector('#how-it-works .hero-promo-pill span:last-child');
+
+  if (workflowSection && workflowCards.length) {
+    const stepMessages = {
+      '1': 'Step 1: Install the lightweight Datra Agent on any Windows, Linux, or signage player in under 2 minutes.',
+      '2': 'Step 2: Each connected player securely pairs over TLS 1.3 to stream live telemetry & device health.',
+      '3': 'Step 3: Gain unified visibility across multi-site networks with real-time Online/Offline tracking.',
+      '4': 'Step 4: Proactive monitoring triggers automatic alerts before hardware or playout faults impact viewers.',
+      '5': 'Step 5: Troubleshoot deep issues remotely — screenshots, camera feeds, restart daemons, reboot players.',
+      '6': 'Step 6: Confirm resolution remotely with verified Proof-of-Play telemetry — 0 truck rolls required.'
+    };
+
+    workflowCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const wasActive = card.classList.contains('is-active');
+        workflowCards.forEach(c => c.classList.remove('is-active'));
+        if (!wasActive) {
+          card.classList.add('is-active');
+          const stepNum = card.dataset.step;
+          if (promoPill && stepMessages[stepNum]) {
+            promoPill.textContent = stepMessages[stepNum];
+            promoPill.style.color = 'var(--violet2)';
+            setTimeout(() => {
+              if (promoPill) promoPill.style.color = '';
+            }, 3200);
+          }
+        }
+      });
+    });
+  }
+
+  // 12. Floating Back-to-Top Button
+  let bttBtn = document.getElementById('backToTop');
+  if (!bttBtn) {
+    bttBtn = document.createElement('button');
+    bttBtn.id = 'backToTop';
+    bttBtn.className = 'back-to-top';
+    bttBtn.setAttribute('aria-label', 'Back to top of page');
+    bttBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 15l-6-6-6 6"/></svg>';
+    document.body.appendChild(bttBtn);
+  }
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 420) {
+      bttBtn.classList.add('visible');
+    } else {
+      bttBtn.classList.remove('visible');
+    }
+  }, { passive: true });
+
+  bttBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 });
