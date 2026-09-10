@@ -91,8 +91,17 @@ html {
   display: block;
   position: relative;
   top: -84px;
+  height: 0;
+  line-height: 0;
   visibility: hidden;
   pointer-events: none;
+}
+
+section[id],
+#hardware,
+#platform,
+#packages {
+  scroll-margin-top: 86px;
 }
 
 html, body {
